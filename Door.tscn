@@ -1,0 +1,79 @@
+[gd_scene load_steps=13 format=3 uid="uid://bk3as6c103s0o"]
+
+[ext_resource type="Script" path="res://Door.gd" id="1_aouy0"]
+[ext_resource type="Texture2D" uid="uid://wjg1j0j6vsfw" path="res://prototyping_assets/Treasure Hunters/Treasure Hunters/Pirate Ship/Sprites/Decorations/Door/Opening/01.png" id="2_d278b"]
+[ext_resource type="Texture2D" uid="uid://ckvw1rmay7ab7" path="res://prototyping_assets/Treasure Hunters/Treasure Hunters/Pirate Ship/Sprites/Decorations/Door/Opening/02.png" id="3_i31ky"]
+[ext_resource type="Texture2D" uid="uid://d83d5ouj82e0" path="res://prototyping_assets/Treasure Hunters/Treasure Hunters/Pirate Ship/Sprites/Decorations/Door/Opening/03.png" id="4_kxklp"]
+[ext_resource type="Texture2D" uid="uid://bkajjaidsyfg3" path="res://prototyping_assets/Treasure Hunters/Treasure Hunters/Pirate Ship/Sprites/Decorations/Door/Opening/04.png" id="5_jlqxh"]
+[ext_resource type="Texture2D" uid="uid://dx0bfy6dpxfy" path="res://prototyping_assets/Treasure Hunters/Treasure Hunters/Pirate Ship/Sprites/Decorations/Door/Opening/05.png" id="6_r77vm"]
+[ext_resource type="AudioStream" uid="uid://bfc03lhcg0d6x" path="res://prototyping_assets/dorm-door-opening-6038.mp3" id="7_3pbwm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8d6hm"]
+size = Vector2(46, 43)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_crltt"]
+size = Vector2(20, 41)
+
+[sub_resource type="Animation" id="Animation_ygjsi"]
+resource_name = "Door"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("2_d278b"), ExtResource("3_i31ky"), ExtResource("4_kxklp"), ExtResource("5_jlqxh"), ExtResource("6_r77vm")]
+}
+
+[sub_resource type="Animation" id="Animation_7la1c"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_d278b")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4cq2a"]
+_data = {
+"Door": SubResource("Animation_ygjsi"),
+"RESET": SubResource("Animation_7la1c")
+}
+
+[node name="Door" type="Area2D"]
+script = ExtResource("1_aouy0")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_d278b")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 9)
+shape = SubResource("RectangleShape2D_8d6hm")
+
+[node name="NearDoor" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="NearDoor"]
+position = Vector2(0, 10.5)
+shape = SubResource("RectangleShape2D_crltt")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_4cq2a")
+}
+
+[node name="sfx_door_start" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_3pbwm")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
+[connection signal="body_entered" from="NearDoor" to="." method="_on_near_door_body_entered"]
